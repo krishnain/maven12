@@ -3,7 +3,7 @@ pipeline
     agent any
     stages
     {
-        stage('ContinuousDownload_Master')
+        stage('ContinuousDownload_Loans')
         {
             steps
             {
@@ -22,7 +22,7 @@ pipeline
                
             }
         }
-        stage('ContinuousBuild_Master')
+        stage('ContinuousBuild_Loans')
         {
             steps
             {
@@ -36,63 +36,6 @@ pipeline
                     {
                         mail bcc: '', body: 'Jenkins is unable to create an artifact from the downloaded code', cc: '', from: '', replyTo: '', subject: 'Build Failed', to: 'development.team@gmail.com'
                         exit(1)
-                    }
-                }
-               
-            }
-        }
-         stage('ContinuousDeployment_Master')
-        {
-            steps
-            {
-                script
-                {
-                    try
-                    {
-                         sh 'scp /home/ubuntu/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.29.204:/var/lib/tomcat9/webapps/testapp.war'
-                    }
-                    catch(Exception e3)
-                    {
-                        mail bcc: '', body: 'Jenkins is unable to deploy into tomcat on the QAServer', cc: '', from: '', replyTo: '', subject: 'Deployment Failed', to: 'middleware.team@gmail.com'
-                        exit(1)
-                    }
-                }
-               
-            }
-        }
-        stage('ContinuousTesting_Master')
-        {
-            steps
-            {
-                script
-                {
-                    try
-                    {
-                        git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-                        sh 'java -jar /home/ubuntu/.jenkins/workspace/DeclarativePipeline/testing.jar'
-                    }
-                    catch(Exception e4)
-                    {
-                        mail bcc: '', body: 'Selenium scripts are failing', cc: '', from: '', replyTo: '', subject: 'Testing  Failed', to: 'qa.team@gmail.com'
-                        exit(1)
-                    }
-                }
-                
-            }
-        }
-        stage('ContinuousDelivery_Master')
-        {
-            steps
-            {
-                script
-                {
-                    try
-                    {
-                        sh 'scp /home/ubuntu/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.18.26:/var/lib/tomcat9/webapps/prodapp.war'
-                    }
-                    catch(Exception e5)
-                    {
-                        mail bcc: '', body: 'Jenkins is unable to deploy into tomcat on the ProdServers', cc: '', from: '', replyTo: '', subject: 'Delivery  Failed', to: 'delivery.team@gmail.com'
                     }
                 }
                
